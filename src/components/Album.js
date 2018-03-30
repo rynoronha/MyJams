@@ -84,7 +84,7 @@ class Album extends Component {
 
     handleNextClick() {
       const currentIndex = this.state.album.songs.findIndex(song => this.state.currentSong === song);
-      const newIndex = Math.min(4, currentIndex + 1);
+      const newIndex = Math.min(this.state.album.songs.length - 1, currentIndex + 1);
       const newSong = this.state.album.songs[newIndex];
       this.setSong(newSong);
       this.play(newSong);
@@ -109,7 +109,7 @@ class Album extends Component {
         return "-:--";
       }
       else if (seconds <10) {
-        return minutes + ":" + "0" + seconds;
+        return minutes + ":0" + seconds;
       }
       return minutes + ":" + seconds;
     }
@@ -117,21 +117,22 @@ class Album extends Component {
    render() {
      return (
        <section className="album">
+       <div id="col-container">
         <section id="album-info">
-         <img id="album-cover-art" src={this.state.album.albumCover} />
-         <div className="album-details">
-          <h1 id="album-title">{this.state.album.title}</h1>
-          <h2 className="artist">{this.state.album.artist}</h2>
-          <div id="release-info">{this.state.album.releaseInfo}</div>
-         </div>
-         </section>
-         <table id="song-list">
-           <colgroup>
-             <col id="song-number-column" />
-             <col id="song-title-column" />
-             <col id="song-duration-column" />
-           </colgroup>
-           <tbody>
+          <img id="album-cover-art" src={this.state.album.albumCover} alt="album cover art" />
+          <div className="album-details">
+            <h4 id="album-title">{this.state.album.title}</h4>
+            <h3 className="artist">{this.state.album.artist}</h3>
+            <h4 id="release-info">{this.state.album.releaseInfo}</h4>
+          </div>
+        </section>
+        <table id="song-list">
+          <colgroup>
+            <col id="song-number-column" />
+            <col id="song-title-column" />
+            <col id="song-duration-column" />
+          </colgroup>
+          <tbody>
               {this.state.album.songs.map( (song, index) =>
                 <tr className="song" key={index} onClick={() => this.handleSongClick(song)} >
                  <td className="song-actions">
@@ -142,12 +143,14 @@ class Album extends Component {
                    </button>
                  </td>
                  <td className="song-title">{song.title}</td>
-                 <td className="song-duration">{this.formatTime(parseInt(song.duration))}</td>
+                 <td className="song-duration">{this.formatTime(parseInt(song.duration, 10))}</td>
                </tr>
               )}
-           </tbody>
-         </table>
-         <PlayerBar
+          </tbody>
+        </table>
+        </div>
+        <div id="player-bar">
+          <PlayerBar
            isPlaying={this.state.isPlaying}
            currentSong={this.state.currentSong}
            handleSongClick={() => this.handleSongClick(this.state.currentSong)}
@@ -159,8 +162,8 @@ class Album extends Component {
            handleTimeChange={(e) => this.handleTimeChange(e)}
            handleVolumeChange={(e) => this.handleVolumeChange(e)}
            formatTime={(time) => this.formatTime(time)}
-
          />
+        </div>
        </section>
      );
    }
