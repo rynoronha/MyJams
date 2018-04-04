@@ -11,25 +11,25 @@ class Album extends Component {
        return album.slug === this.props.match.params.slug
      });
 
-     this.handleMouseHover = this.handleMouseHover.bind(this);
-
      this.state = {
        album: album,
-       currentSong: album.songs[0],
+       currentSong: null,
        currentTime: 0,
        duration: album.songs[0].duration,
        isPlaying: false,
        volume: 0.5,
        isHovering: false,
+       currentlyHoveredSong: null,
      };
 
      this.audioElement = document.createElement('audio');
      this.audioElement.src = album.songs[0].audioSrc;
     }
 
-    handleMouseHover() {
-    this.setState(this.toggleHoverState);
-  }
+    handleMouseOver(e) {
+      this.setState({ currentlyHoveredSong: e.target.innerText });
+      this.setState(this.toggleHoverState);
+    }
 
   toggleHoverState(state) {
     return {
@@ -86,10 +86,6 @@ class Album extends Component {
      }
     }
 
-    handleMouseOver() {
-      document.getElementsByClassName("song-number").className = "ion-play";
-    }
-
     handlePrevClick() {
       const currentIndex = this.state.album.songs.findIndex(song => this.state.currentSong === song);
       const newIndex = Math.max(0, currentIndex - 1);
@@ -132,16 +128,20 @@ class Album extends Component {
 
     buttonDisplay (song, index) {
       if (this.state.isHovering === false && this.state.currentSong !== song) {
-         <span className="song-number">index+1</span>
-       } else if ((this.state.currentSong === song && this.state.isPlaying === false ) ||
-         (this.state.isHovering === true && this.state.currentSong !== song)) {
-           <span className="ion-play"></span>
-         } else if (this.state.currentSong === song && this.state.isPlaying === true) {
-           <span className="ion-pause"></span>
-         }
+        return <span className="song-number">{index+1}</span>
+      } else if ((this.state.currentSong === song && this.state.isPlaying === false ) ||
+        (this.state.isHovering === true && this.state.currentSong !== song && this.state.currentlyHoveredSong === index + 1)) {
+        console.log("Returning ion-play");
+        return <span className="ion-play"></span>
+      } else if (this.state.currentSong === song && this.state.isPlaying === true) {
+        console.log("Returning ion-pause");
+        return <span className="ion-pause"></span>
+      }
+      return <span className="song-number">{index+1}</span>
     }
 
    render() {
+     console.log("Currently hovered song: " + this.state.currentlyHoveredSong);
      return (
        <section className="album">
        <div id="col-container">
@@ -160,22 +160,17 @@ class Album extends Component {
             <col id="song-duration-column" />
           </colgroup>
           <tbody>
-              {this.state.album.songs.map( (song, index) =>
-                <tr className="song" key={index} onClick={() => this.handleSongClick(song)} >
-                 <td className="song-actions">
-                   <button>
-                     <span className="song-number"
-                        onMouseEnter={this.handleMouseHover}
-                        onMouseLeave={this.handleMouseHover}
-                      >{index+1}
-                      </span>
-                      {this.buttonDisplay(song, index)}
-                   </button>
-                 </td>
-                 <td className="song-title">{song.title}</td>
-                 <td className="song-duration">{this.formatTime(parseInt(song.duration, 10))}</td>
-               </tr>
-              )}
+            {this.state.album.songs.map( (song, index) =>
+              <tr className="song" key={index} onClick={() => this.handleSongClick(song)} >
+                <td className="song-actions">
+                  <button onMouseEnter={(e) => this.handleMouseOver(e)}>
+                    {this.buttonDisplay(song, index)}
+                  </button>
+                </td>
+                <td className="song-title">{song.title}</td>
+                <td className="song-duration">{this.formatTime(parseInt(song.duration, 10))}</td>
+              </tr>
+            )}
           </tbody>
         </table>
         </div>
