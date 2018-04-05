@@ -11,15 +11,23 @@ class Album extends Component {
        return album.slug === this.props.match.params.slug
      });
 
+     const currentlyHoveredSongs = [];
+
+     album.songs.forEach((song, i) => {
+       currentlyHoveredSongs[i] = false;
+     });
+
+     console.log(currentlyHoveredSongs);
+
      this.state = {
        album: album,
        currentSong: null,
+       currentlyHoveredSongs: currentlyHoveredSongs,
        currentTime: 0,
        duration: album.songs[0].duration,
        isPlaying: false,
-       volume: 0.5,
        isHovering: false,
-       currentlyHoveredSong: null,
+       volume: 0.5
      };
 
      this.audioElement = document.createElement('audio');
@@ -27,15 +35,18 @@ class Album extends Component {
     }
 
     handleMouseOver(e) {
-      this.setState({ currentlyHoveredSong: e.target.innerText });
-      this.setState(this.toggleHoverState);
+      var currentlyHoveredSongs = this.state.currentlyHoveredSongs;
+      console.log(e.target);
+      currentlyHoveredSongs[parseInt(e.target.className, 10)] = true;
+      this.setState({ currentlyHoveredSongs: currentlyHoveredSongs });
     }
 
-  toggleHoverState(state) {
-    return {
-      isHovering: !state.isHovering,
-    };
-  }
+    handleMouseLeave(e) {
+      var currentlyHoveredSongs = this.state.currentlyHoveredSongs;
+      currentlyHoveredSongs[parseInt(e.target.className, 10)] = false;
+      this.setState({ currentlyHoveredSongs: currentlyHoveredSongs });
+    }
+
 
     componentDidMount() {
       this.eventListeners = {
@@ -127,21 +138,29 @@ class Album extends Component {
     }
 
     buttonDisplay (song, index) {
-      if (this.state.isHovering === false && this.state.currentSong !== song) {
-        return <span className="song-number">{index+1}</span>
-      } else if ((this.state.currentSong === song && this.state.isPlaying === false ) ||
-        (this.state.isHovering === true && this.state.currentSong !== song && this.state.currentlyHoveredSong === index + 1)) {
-        console.log("Returning ion-play");
-        return <span className="ion-play"></span>
-      } else if (this.state.currentSong === song && this.state.isPlaying === true) {
-        console.log("Returning ion-pause");
-        return <span className="ion-pause"></span>
+      if (this.state.currentlyHoveredSongs[index+1] === true) {
+        if (this.state.currentSong === song && this.state.isPlaying) {
+          return <span className="ion-pause">{}</span>;
+        } else {
+          return <span className="ion-play">{}</span>;
+        }
+      } else {
+        if (this.state.currentSong === song && this.state.isPlaying) {
+          return <span className="ion-pause">{}</span>;
+        } else {
+          return <span className="song-number">{index+1}</span>;
+        }
       }
-      return <span className="song-number">{index+1}</span>
+
     }
 
    render() {
-     console.log("Currently hovered song: " + this.state.currentlyHoveredSong);
+     console.log("");
+     console.log("Currently hovered songs: ");
+     console.log(this.state.currentlyHoveredSongs);
+     console.log("Is hovering? " + this.state.isHovering);
+     console.log("Currently playing song: " + this.state.currentlyPlayingSong);
+     console.log("Is playing? " + this.state.isPlaying);
      return (
        <section className="album">
        <div id="col-container">
@@ -163,9 +182,10 @@ class Album extends Component {
             {this.state.album.songs.map( (song, index) =>
               <tr className="song" key={index} onClick={() => this.handleSongClick(song)} >
                 <td className="song-actions">
-                  <button onMouseEnter={(e) => this.handleMouseOver(e)}>
+                <button className={index+1} onMouseEnter={(e) => this.handleMouseOver(e)}
+                  onMouseLeave={(e) => this.handleMouseLeave(e)}>
                     {this.buttonDisplay(song, index)}
-                  </button>
+                </button>
                 </td>
                 <td className="song-title">{song.title}</td>
                 <td className="song-duration">{this.formatTime(parseInt(song.duration, 10))}</td>
