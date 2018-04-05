@@ -11,19 +11,42 @@ class Album extends Component {
        return album.slug === this.props.match.params.slug
      });
 
+     const currentlyHoveredSongs = [];
+
+     album.songs.forEach((song, i) => {
+       currentlyHoveredSongs[i] = false;
+     });
+
+     console.log(currentlyHoveredSongs);
+
      this.state = {
        album: album,
-       currentSong: album.songs[0],
+       currentSong: null,
+       currentlyHoveredSongs: currentlyHoveredSongs,
        currentTime: 0,
        duration: album.songs[0].duration,
        isPlaying: false,
-       volume: 0.5,
+       isHovering: false,
+       volume: 0.5
      };
 
      this.audioElement = document.createElement('audio');
      this.audioElement.src = album.songs[0].audioSrc;
-
     }
+
+    handleMouseOver(e) {
+      var currentlyHoveredSongs = this.state.currentlyHoveredSongs;
+      console.log(e.target);
+      currentlyHoveredSongs[parseInt(e.target.className, 10)] = true;
+      this.setState({ currentlyHoveredSongs: currentlyHoveredSongs });
+    }
+
+    handleMouseLeave(e) {
+      var currentlyHoveredSongs = this.state.currentlyHoveredSongs;
+      currentlyHoveredSongs[parseInt(e.target.className, 10)] = false;
+      this.setState({ currentlyHoveredSongs: currentlyHoveredSongs });
+    }
+
 
     componentDidMount() {
       this.eventListeners = {
@@ -114,7 +137,30 @@ class Album extends Component {
       return minutes + ":" + seconds;
     }
 
+    buttonDisplay (song, index) {
+      if (this.state.currentlyHoveredSongs[index+1] === true) {
+        if (this.state.currentSong === song && this.state.isPlaying) {
+          return <span className="ion-pause">{}</span>;
+        } else {
+          return <span className="ion-play">{}</span>;
+        }
+      } else {
+        if (this.state.currentSong === song && this.state.isPlaying) {
+          return <span className="ion-pause">{}</span>;
+        } else {
+          return <span className="song-number">{index+1}</span>;
+        }
+      }
+
+    }
+
    render() {
+     console.log("");
+     console.log("Currently hovered songs: ");
+     console.log(this.state.currentlyHoveredSongs);
+     console.log("Is hovering? " + this.state.isHovering);
+     console.log("Currently playing song: " + this.state.currentlyPlayingSong);
+     console.log("Is playing? " + this.state.isPlaying);
      return (
        <section className="album">
        <div id="col-container">
@@ -133,6 +179,7 @@ class Album extends Component {
             <col id="song-duration-column" />
           </colgroup>
           <tbody>
+<<<<<<< HEAD
               {this.state.album.songs.map( (song, index) =>
                 <tr className="song" key={index} onClick={() => this.handleSongClick(song)} >
                  <td className="song-actions">
@@ -146,6 +193,20 @@ class Album extends Component {
                  <td className="song-duration">{this.formatTime(parseInt(song.duration, 10))}</td>
                </tr>
               )}
+=======
+            {this.state.album.songs.map( (song, index) =>
+              <tr className="song" key={index} onClick={() => this.handleSongClick(song)} >
+                <td className="song-actions">
+                <button className={index+1} onMouseEnter={(e) => this.handleMouseOver(e)}
+                  onMouseLeave={(e) => this.handleMouseLeave(e)}>
+                    {this.buttonDisplay(song, index)}
+                </button>
+                </td>
+                <td className="song-title">{song.title}</td>
+                <td className="song-duration">{this.formatTime(parseInt(song.duration, 10))}</td>
+              </tr>
+            )}
+>>>>>>> assignment-10-styling
           </tbody>
         </table>
         </div>
