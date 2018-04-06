@@ -179,7 +179,6 @@ class Album extends Component {
             <col id="song-duration-column" />
           </colgroup>
           <tbody>
-<<<<<<< HEAD
               {this.state.album.songs.map( (song, index) =>
                 <tr className="song" key={index} onClick={() => this.handleSongClick(song)} >
                  <td className="song-actions">
@@ -193,7 +192,6 @@ class Album extends Component {
                  <td className="song-duration">{this.formatTime(parseInt(song.duration, 10))}</td>
                </tr>
               )}
-=======
             {this.state.album.songs.map( (song, index) =>
               <tr className="song" key={index} onClick={() => this.handleSongClick(song)} >
                 <td className="song-actions">
@@ -206,7 +204,6 @@ class Album extends Component {
                 <td className="song-duration">{this.formatTime(parseInt(song.duration, 10))}</td>
               </tr>
             )}
->>>>>>> assignment-10-styling
           </tbody>
         </table>
         </div>
