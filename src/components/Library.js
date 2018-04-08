@@ -21,14 +21,6 @@ class Library extends Component {
              <div>{album.songs.length} songs</div>
           </Link>
         </div>
-          <div className="Album" key={index}>
-            <Link className="Album-links" to={`/album/${album.slug}`} key={index}>
-            <img src={album.albumCover} alt={album.title} height="auto " width="75%" />
-             <div>{album.title}</div>
-             <div>{album.artist}</div>
-             <div>{album.songs.length} songs</div>
-             </Link>
-             </div>
         )
       }
       </section>
