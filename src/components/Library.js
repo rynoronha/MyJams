@@ -10,7 +10,7 @@ class Library extends Component {
 
    render() {
     return (
-      <section className='library'>
+      <section className='library'> 
       {
         this.state.albums.map( (album, index) =>
           <div className="Album" key={index}>
