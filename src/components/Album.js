@@ -155,12 +155,6 @@ class Album extends Component {
     }
 
    render() {
-     console.log("");
-     console.log("Currently hovered songs: ");
-     console.log(this.state.currentlyHoveredSongs);
-     console.log("Is hovering? " + this.state.isHovering);
-     console.log("Currently playing song: " + this.state.currentlyPlayingSong);
-     console.log("Is playing? " + this.state.isPlaying);
      return (
        <section className="album">
        <div id="col-container">
